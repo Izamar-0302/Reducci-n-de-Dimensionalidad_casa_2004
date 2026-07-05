@@ -43,7 +43,7 @@ pca, kmeans, svm_models = cargar_modelos()
 # ============================================================
 st.markdown("""
 <h1 style='text-align:center; color:#1976d2;'>🔢 Clasificador MNIST con IA</h1>
-<p style='text-align:center;'>PCA + KMeans + SVM | Dibuja un dígito (0-9)</p>
+<p style='text-align:center;'>PCA + KMeans + SVM | Dibuja un dígito (0-9) | Angeles Euceda | 20221930061</p>
 """, unsafe_allow_html=True)
 
 st.divider()
