@@ -1,0 +1,21 @@
+{
+    "nombre_modelo": "MNIST - PCA + KMeans + SVM",
+    "tipo_modelo": "Reducción de dimensionalidad + Clustering + Clasificación",
+    "n_componentes_pca": 2,
+    "n_clusters_kmeans": 4,
+    "svm_kernels": [
+        "linear",
+        "poly",
+        "rbf",
+        "sigmoid"
+    ],
+    "variables_utilizadas": "Pixeles 28x28 normalizados",
+    "archivos_generados": [
+        "/content/models/pca_mnist.pkl",
+        "/content/models/kmeans_mnist.pkl",
+        "/content/models/svm_mnist.pkl",
+        "/content/models/model_metadata.json",
+        "/content/outputs/mnist_con_clusters.csv",
+        "/content/outputs/svm_resultados_kernels.csv"
+    ]
+}
