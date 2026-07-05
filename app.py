@@ -1,4 +1,3 @@
-
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -32,6 +31,13 @@ def cargar_modelos():
 
 pca, kmeans, svm_models = cargar_modelos()
 
+# DEBUG: Mostrar info de los modelos cargados
+st.sidebar.header("🔧 Debug Info")
+st.sidebar.write(f"PCA n_components: {pca.n_components_}")
+st.sidebar.write(f"PCA n_features: {pca.n_features_in_}")
+st.sidebar.write(f"KMeans n_features: {kmeans.n_features_in_}")
+st.sidebar.write(f"KMeans clusters: {kmeans.n_clusters}")
+
 # ============================================================
 # HEADER
 # ============================================================
@@ -48,30 +54,54 @@ st.subheader("✏️ Ingrese un vector de 784 píxeles")
 modo = st.radio("Modo de entrada", ["Ejemplo automático", "Manual"])
 
 if modo == "Ejemplo automático":
-    sample = np.random.rand(784)
+    # Generar valores entre 0-255 como en el dataset original
+    sample = np.random.randint(0, 256, size=784).astype(float)
 else:
     sample = []
     for i in range(784):
         sample.append(st.number_input(f"Pixel {i}", 0.0, 255.0, 0.0))
     sample = np.array(sample)
 
+st.write(f"Sample shape: {sample.shape}")
+st.write(f"Sample min: {sample.min()}, max: {sample.max()}")
+
 # ============================================================
 # BOTÓN PREDICCIÓN
 # ============================================================
 if st.button("🔍 Predecir dígito"):
 
-    # Normalizar
-    sample = sample / 255.0
-
+    # 🔴 IMPORTANTE: El PCA fue entrenado con datos sin normalizar (0-255)
+    # Si tu notebook usó X_norm = X / 255.0 antes de PCA, DESCOMENTA la siguiente línea:
+    # sample = sample / 255.0
+    
+    # Asegurar shape correcto para PCA (1 muestra, 784 features)
+    sample_reshaped = sample.reshape(1, -1)
+    st.write(f"Shape para PCA: {sample_reshaped.shape}")
+    
     # PCA
-    sample_pca = pca.transform([sample])
+    try:
+        sample_pca = pca.transform(sample_reshaped)
+        st.write(f"Shape después de PCA: {sample_pca.shape}")
+    except ValueError as e:
+        st.error(f"Error en PCA: {e}")
+        st.error(f"PCA espera {pca.n_features_in_} features, recibió {sample_reshaped.shape[1]}")
+        st.stop()
 
     # SVM (mejor kernel)
     model = svm_models["rbf"]
-    pred = model.predict(sample_pca)[0]
+    try:
+        pred = model.predict(sample_pca)[0]
+    except ValueError as e:
+        st.error(f"Error en SVM: {e}")
+        st.stop()
 
     # Cluster KMeans
-    cluster = kmeans.predict(sample_pca)[0]
+    try:
+        cluster = kmeans.predict(sample_pca)[0]
+    except ValueError as e:
+        st.error(f"Error en KMeans: {e}")
+        st.error(f"KMeans espera {kmeans.n_features_in_} features, recibió {sample_pca.shape[1]}")
+        st.stop()
 
     # ============================================================
     # RESULTADO
