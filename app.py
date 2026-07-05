@@ -54,7 +54,7 @@ st.subheader("✏️ Ingrese un vector de 784 píxeles")
 modo = st.radio("Modo de entrada", ["Ejemplo automático", "Manual"])
 
 if modo == "Ejemplo automático":
-    # Generar valores entre 0-255 como en el dataset original
+    # Valores entre 0-255 como en el dataset original MNIST
     sample = np.random.randint(0, 256, size=784).astype(float)
 else:
     sample = []
@@ -63,22 +63,21 @@ else:
     sample = np.array(sample)
 
 st.write(f"Sample shape: {sample.shape}")
-st.write(f"Sample min: {sample.min()}, max: {sample.max()}")
+st.write(f"Sample min: {sample.min():.1f}, max: {sample.max():.1f}")
 
 # ============================================================
 # BOTÓN PREDICCIÓN
 # ============================================================
 if st.button("🔍 Predecir dígito"):
 
-    # 🔴 IMPORTANTE: El PCA fue entrenado con datos sin normalizar (0-255)
-    # Si tu notebook usó X_norm = X / 255.0 antes de PCA, DESCOMENTA la siguiente línea:
-    # sample = sample / 255.0
+    # ✅ NORMALIZAR: El PCA fue entrenado con X_norm = X / 255.0
+    sample_norm = sample / 255.0
     
-    # Asegurar shape correcto para PCA (1 muestra, 784 features)
-    sample_reshaped = sample.reshape(1, -1)
+    # Asegurar shape correcto: (1, 784)
+    sample_reshaped = sample_norm.reshape(1, -1)
     st.write(f"Shape para PCA: {sample_reshaped.shape}")
     
-    # PCA
+    # PCA: 784 features → 2 componentes
     try:
         sample_pca = pca.transform(sample_reshaped)
         st.write(f"Shape después de PCA: {sample_pca.shape}")
@@ -87,9 +86,9 @@ if st.button("🔍 Predecir dígito"):
         st.error(f"PCA espera {pca.n_features_in_} features, recibió {sample_reshaped.shape[1]}")
         st.stop()
 
-    # SVM (mejor kernel)
-    model = svm_models["rbf"]
+    # SVM (mejor kernel: rbf)
     try:
+        model = svm_models["rbf"]
         pred = model.predict(sample_pca)[0]
     except ValueError as e:
         st.error(f"Error en SVM: {e}")
@@ -108,16 +107,23 @@ if st.button("🔍 Predecir dígito"):
     # ============================================================
     st.markdown(f"""
     <div style="
-        background:white;
-        padding:2rem;
-        border-radius:20px;
-        text-align:center;
-        box-shadow:0 10px 30px rgba(0,0,0,0.2);
-        margin-top:20px;">
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        margin-top: 20px;
+        color: white;">
         
-        <h2 style="color:#0d47a1;">Resultado</h2>
-        <h1 style="font-size:4rem;">{pred}</h1>
-        <p>Cluster KMeans: <b>{cluster}</b></p>
+        <h2 style="color: #fff; margin-bottom: 0.5rem;">🎯 Resultado</h2>
+        <h1 style="font-size: 6rem; margin: 0; color: #fff;">{pred}</h1>
+        <p style="font-size: 1.2rem; color: #e0e0e0;">
+            Dígito predicho por SVM (kernel RBF)
+        </p>
+        <hr style="border: 1px solid rgba(255,255,255,0.3); margin: 1rem 0;">
+        <p style="font-size: 1rem; color: #e0e0e0;">
+            Cluster KMeans: <b style="color: #ffd700;">{cluster}</b>
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
