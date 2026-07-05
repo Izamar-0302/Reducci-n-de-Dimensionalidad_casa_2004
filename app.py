@@ -13,6 +13,8 @@ st.set_page_config(
     page_icon="🔢",
     layout="centered"
 )
+st.write("KMeans features:", kmeans.n_features_in_)
+st.write("Input features:", sample_pca.shape)
 
 # ============================================================
 # MODELOS
