@@ -88,10 +88,6 @@ else:
                 point_display_radius=0,
                 key="canvas_dibujo",
             )
-            
-            if st.button("🗑️ Limpiar canvas", key="btn_limpiar"):
-                st.session_state.canvas_key = st.session_state.get('canvas_key', 0) + 1
-                st.rerun()
         
         with col2:
             st.markdown("**Procesado:**")
@@ -135,14 +131,13 @@ if sample is not None:
         cluster = kmeans.predict(sample_pca)[0]
 
         # ============================================================
-        # RESULTADO CON st.html()
+        # RESULTADO
         # ============================================================
         st.divider()
         
         col1, col2, col3 = st.columns([1, 2, 1])
         
         with col2:
-            # ✅ Usar st.html() para renderizar HTML sin problemas
             st.html(f"""
             <div style="
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -164,7 +159,6 @@ if sample is not None:
             </div>
             """)
             
-            # Debug
             with st.expander("🔍 Ver detalles técnicos"):
                 st.write(f"**Input:** min={sample.min():.1f}, max={sample.max():.1f}, media={sample.mean():.1f}")
                 st.write(f"**Normalizado:** min={sample_norm.min():.4f}, max={sample_norm.max():.4f}")
