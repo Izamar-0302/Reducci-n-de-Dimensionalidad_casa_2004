@@ -172,4 +172,4 @@ if sample is not None:
                 st.write(f"**Predicción:** dígito={pred}, cluster={cluster}")
 
 st.divider()
-st.caption("
+st.caption("Desarrollado con ❤️ | PCA + KMeans + SVM | MNIST Dataset")
