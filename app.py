@@ -39,8 +39,7 @@ st.markdown("""
 <h1 style='text-align:center; color:#1976d2;'>🔢 Clasificador MNIST con IA</h1>
 <p style='text-align:center;'>PCA + KMeans + SVM | Streamlit App</p>
 """, unsafe_allow_html=True)
-st.write("KMeans features:", kmeans.n_features_in_)
-st.write("Input features:", sample_pca.shape)
+
 # ============================================================
 # INPUT (28x28 PIXELS SIMULADO)
 # ============================================================
